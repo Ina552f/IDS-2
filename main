@@ -2,38 +2,52 @@ import cv2
 import numpy as np
 
 cap = cv2.VideoCapture(0)
-accumulator_frame = None           # can we delete this? if not then explain what it does (stops accumulation of finger)
+accumulator_frame = None
 
 while True:
     ret, frame = cap.read()
-    fs = frame.shape                 # instead setup where we decide the shape manually? eventually use stacking from youtube video (M)
+    fs = frame.shape  # instead setup where we decide the shape manually? eventually use stacking from youtube video (M)
     flipped = cv2.flip(frame, 1)
-    mask = cv2.inRange(flipped, (80, 51, 53), (254, 249, 243))  # write in RGB the color you want from the lower end to higher (0, 0, 0), (51, 51, 51)
+    mask = cv2.inRange(flipped, (0, 0, 0), (47, 49, 51))
     masked_input = cv2.bitwise_and(flipped, flipped, mask=mask)
     if accumulator_frame is None:
-        accumulator_frame = np.zeros(fs, dtype=np.uint8)
+        accumulator_frame = np.ones(fs, dtype=np.uint8) * 255
 
+    # BLOB DETECTION
     p = cv2.SimpleBlobDetector_Params()
     p.filterByColor = False
     p.filterByConvexity = False
     p.filterByArea = True
-    p.minArea = 200                             # Put in so it doesnt go for small dots in the background, but bigger like our target
-    p.maxArea = 400                             # Added, not sure if it should be more or less. Put in so it doesnt detect a whole black background
+    p.minArea = 500
+    # p.maxArea = 500
     detector = cv2.SimpleBlobDetector_create(p)
-    key_points = detector.detect(mask)  # Blob detection here for future enhancements
+    key_points = detector.detect(mask)
 
     if key_points:
-        pt = key_points[0].pt               # if there is more than one fingertip in the screen then it choses the first one
-        if pt[0] < 100 and pt[1] < 100:     # En frame i højre hjørne der når man røre sletter alle frames (clear out)
-                                            # tænker man kan bruge det her til at tilføje andre ting? fortsætte.
-                                            # if accumulator touched then change draw function
+        pt = key_points[0].pt
+        if pt[0] < 140 and pt[1] < 30:
             accumulator_frame[:, :, :] = 0
-        cv2.circle(accumulator_frame, (round(pt[0]), round(pt[1])), 10, (352, 76, 6), -1)       # draw something else that looks better?
 
+        cv2.circle(accumulator_frame, (round(pt[0]), round(pt[1])), 10, (352, 76, 6), -1)
+
+    # BUTTONS
+    accumulator_frame = cv2.rectangle(accumulator_frame, (0, 0), (140, 30), (122, 122, 122), -1)
+    accumulator_frame = cv2.rectangle(accumulator_frame, (540, 0), (650, 30), (122, 122, 122), -1)
+    flipped = cv2.rectangle(flipped, (0, 0), (650, 30), (122, 122, 122), -1)        # DELETE?
+
+    # TEXT
+    cv2.putText(accumulator_frame, "Clear painting", (10, 20), cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255))
+    cv2.putText(accumulator_frame, "Save me!", (552, 20), cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255))
+    cv2.putText(flipped, "Find something black and try to write!", (5, 20), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 0))
+
+    # FRAMES
     cv2.imshow('Webcam', flipped)
     cv2.imshow('Detect', mask)
     cv2.imshow('Paint', accumulator_frame)
-    if cv2.waitKey(1) & 0xFF == ord('q'):           # CHANGE (more buttons?)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
         break
+
 cap.release()
 cv2.destroyAllWindows()
+
