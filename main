@@ -25,29 +25,39 @@ while True:
 
     if key_points:
         pt = key_points[0].pt
+        # cv2.circle(accumulator_frame, (round(pt[0]), round(pt[1])), 10, (352, 76, 6), -1)
+
         if pt[0] < 140 and pt[1] < 30:
             accumulator_frame[:, :, :] = 0
 
-        cv2.circle(accumulator_frame, (round(pt[0]), round(pt[1])), 10, (352, 76, 6), -1)
+# COLOR COORDINATION
+        if pt[0] < 325 and pt[1] < 250:
+            cv2.circle(accumulator_frame, (round(pt[0]), round(pt[1])), 10, (0, 255, 247), -1)  # BLUE
+        if pt[0] > 325 and pt[1] < 250:
+            cv2.circle(accumulator_frame, (round(pt[0]), round(pt[1])), 10, (255, 0, 21), -1)  # RED
+        if pt[0] < 325 and pt[1] > 250:
+            cv2.circle(accumulator_frame, (round(pt[0]), round(pt[1])), 10, (255, 242, 0), -1)      # YELLOW
+        if pt[0] > 325 and pt[1] > 250:
+            cv2.circle(accumulator_frame, (round(pt[0]), round(pt[1])), 10, (30, 255, 0), -1)       # GREEN
 
     # BUTTONS
     accumulator_frame = cv2.rectangle(accumulator_frame, (0, 0), (140, 30), (122, 122, 122), -1)
     accumulator_frame = cv2.rectangle(accumulator_frame, (540, 0), (650, 30), (122, 122, 122), -1)
-    flipped = cv2.rectangle(flipped, (0, 0), (650, 30), (122, 122, 122), -1)        # DELETE?
+    flipped = cv2.rectangle(flipped, (0, 0), (650, 30), (122, 122, 122), -1)  # DELETE?
 
     # TEXT
     cv2.putText(accumulator_frame, "Clear painting", (10, 20), cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255))
     cv2.putText(accumulator_frame, "Save me!", (552, 20), cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255))
-    cv2.putText(flipped, "Find something black and try to write!", (5, 20), cv2.FONT_HERSHEY_PLAIN, 1.5, (0, 0, 0))
+    cv2.putText(flipped, "Find something black and try to paint!", (5, 22), cv2.FONT_HERSHEY_PLAIN, 1.7, (0, 0, 0))
 
     # FRAMES
     cv2.imshow('Webcam', flipped)
     cv2.imshow('Detect', mask)
     cv2.imshow('Paint', accumulator_frame)
 
+    # KEYPRESS
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
 cap.release()
 cv2.destroyAllWindows()
-
