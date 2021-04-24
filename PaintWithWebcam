@@ -26,11 +26,11 @@ while True:
 
     if key_points:
         pt = key_points[0].pt
-        # Clear out paint
+        # Clear out accumulator_frame
         if pt[0] < 140 and pt[1] < 30:
             accumulator_frame[:, :, :] = 0
-        # Takes and saves pictures
-        if pt[0] > 540 and pt[1] < 30:      # Oversensitive
+        # Takes and saves pictures from accumulator_frame
+        if pt[0] > 540 and pt[1] < 30:
             img_name = "opencv_frame_{}.png".format(img_counter)
             cv2.imwrite(img_name, accumulator_frame)
             print("{} written!".format(img_name))
@@ -49,7 +49,6 @@ while True:
     # BUTTONS
     accumulator_frame = cv2.rectangle(accumulator_frame, (0, 0), (140, 30), (122, 122, 122), -1)
     accumulator_frame = cv2.rectangle(accumulator_frame, (540, 0), (650, 30), (122, 122, 122), -1)
-    flipped = cv2.rectangle(flipped, (0, 0), (650, 30), (122, 122, 122), -1)  # DELETE?
 
     # TEXT
     cv2.putText(accumulator_frame, "Clear painting", (10, 20), cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255))
@@ -64,11 +63,11 @@ while True:
     # KEYPRESS
     if cv2.waitKey(1) % 256 == 27:       # Esc key
         break
-    # elif cv2.waitKey(1) == ord('s'):     # S key
-    #     img_name = "opencv_frame_{}.png".format(img_counter)
-    #     cv2.imwrite(img_name, accumulator_frame)
-    #     print("{} written!".format(img_name))
-    #     img_counter += 1
+    elif cv2.waitKey(1) == ord('s'):     # S key
+        img_name = "opencv_frame_{}.png".format(img_counter)
+        cv2.imwrite(img_name, accumulator_frame)
+        print("{} written!".format(img_name))
+        img_counter += 1
 
 cap.release()
 cv2.destroyAllWindows()
