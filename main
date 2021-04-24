@@ -3,10 +3,11 @@ import numpy as np
 
 cap = cv2.VideoCapture(0)
 accumulator_frame = None
+img_counter = 0
 
 while True:
     ret, frame = cap.read()
-    fs = frame.shape  # instead setup where we decide the shape manually? eventually use stacking from youtube video (M)
+    fs = frame.shape
     flipped = cv2.flip(frame, 1)
     mask = cv2.inRange(flipped, (0, 0, 0), (47, 49, 51))
     masked_input = cv2.bitwise_and(flipped, flipped, mask=mask)
@@ -25,20 +26,25 @@ while True:
 
     if key_points:
         pt = key_points[0].pt
-        # cv2.circle(accumulator_frame, (round(pt[0]), round(pt[1])), 10, (352, 76, 6), -1)
-
+        # Clear out paint
         if pt[0] < 140 and pt[1] < 30:
             accumulator_frame[:, :, :] = 0
+        # Takes and saves pictures
+        if pt[0] > 540 and pt[1] < 30:      # Oversensitive
+            img_name = "opencv_frame_{}.png".format(img_counter)
+            cv2.imwrite(img_name, accumulator_frame)
+            print("{} written!".format(img_name))
+            img_counter += 1
 
-# COLOR COORDINATION
+        # COLOR COORDINATION
         if pt[0] < 325 and pt[1] < 250:
-            cv2.circle(accumulator_frame, (round(pt[0]), round(pt[1])), 10, (0, 0, 255), -1)      # BLUE
+            cv2.circle(accumulator_frame, (round(pt[0]), round(pt[1])), 10, (0, 0, 255), -1)  # BLUE
         if pt[0] > 325 and pt[1] < 250:
-            cv2.circle(accumulator_frame, (round(pt[0]), round(pt[1])), 10, (255, 0, 0), -1)       # RED
+            cv2.circle(accumulator_frame, (round(pt[0]), round(pt[1])), 10, (255, 0, 0), -1)  # RED
         if pt[0] < 325 and pt[1] > 250:
-            cv2.circle(accumulator_frame, (round(pt[0]), round(pt[1])), 10, (255, 255, 0), -1)      # YELLOW
+            cv2.circle(accumulator_frame, (round(pt[0]), round(pt[1])), 10, (255, 255, 0), -1)  # YELLOW
         if pt[0] > 325 and pt[1] > 250:
-            cv2.circle(accumulator_frame, (round(pt[0]), round(pt[1])), 10, (0, 255, 0), -1)       # GREEN
+            cv2.circle(accumulator_frame, (round(pt[0]), round(pt[1])), 10, (0, 255, 0), -1)  # GREEN
 
     # BUTTONS
     accumulator_frame = cv2.rectangle(accumulator_frame, (0, 0), (140, 30), (122, 122, 122), -1)
@@ -56,8 +62,13 @@ while True:
     cv2.imshow('Paint', accumulator_frame)
 
     # KEYPRESS
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if cv2.waitKey(1) % 256 == 27:       # Esc key
         break
+    # elif cv2.waitKey(1) == ord('s'):     # S key
+    #     img_name = "opencv_frame_{}.png".format(img_counter)
+    #     cv2.imwrite(img_name, accumulator_frame)
+    #     print("{} written!".format(img_name))
+    #     img_counter += 1
 
 cap.release()
 cv2.destroyAllWindows()
