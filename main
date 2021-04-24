@@ -32,13 +32,13 @@ while True:
 
 # COLOR COORDINATION
         if pt[0] < 325 and pt[1] < 250:
-            cv2.circle(accumulator_frame, (round(pt[0]), round(pt[1])), 10, (0, 255, 247), -1)  # BLUE
+            cv2.circle(accumulator_frame, (round(pt[0]), round(pt[1])), 10, (0, 0, 255), -1)      # BLUE
         if pt[0] > 325 and pt[1] < 250:
-            cv2.circle(accumulator_frame, (round(pt[0]), round(pt[1])), 10, (255, 0, 21), -1)  # RED
+            cv2.circle(accumulator_frame, (round(pt[0]), round(pt[1])), 10, (255, 0, 0), -1)       # RED
         if pt[0] < 325 and pt[1] > 250:
-            cv2.circle(accumulator_frame, (round(pt[0]), round(pt[1])), 10, (255, 242, 0), -1)      # YELLOW
+            cv2.circle(accumulator_frame, (round(pt[0]), round(pt[1])), 10, (255, 255, 0), -1)      # YELLOW
         if pt[0] > 325 and pt[1] > 250:
-            cv2.circle(accumulator_frame, (round(pt[0]), round(pt[1])), 10, (30, 255, 0), -1)       # GREEN
+            cv2.circle(accumulator_frame, (round(pt[0]), round(pt[1])), 10, (0, 255, 0), -1)       # GREEN
 
     # BUTTONS
     accumulator_frame = cv2.rectangle(accumulator_frame, (0, 0), (140, 30), (122, 122, 122), -1)
