@@ -20,7 +20,6 @@ while True:
     p.filterByConvexity = False
     p.filterByArea = True
     p.minArea = 500
-    # p.maxArea = 500
     detector = cv2.SimpleBlobDetector_create(p)
     key_points = detector.detect(mask)
 
@@ -33,7 +32,7 @@ while True:
         if pt[0] > 540 and pt[1] < 30:
             img_name = "opencv_frame_{}.png".format(img_counter)
             cv2.imwrite(img_name, accumulator_frame)
-            print("{} written!".format(img_name))
+            print("{} saved!".format(img_name))
             img_counter += 1
 
         # COLOR COORDINATION
@@ -61,12 +60,12 @@ while True:
     cv2.imshow('Paint', accumulator_frame)
 
     # KEYPRESS
-    if cv2.waitKey(1) % 256 == 27:       # Esc key
+    if cv2.waitKey(1) % 256 == 27:  # Esc key
         break
-    elif cv2.waitKey(1) == ord('s'):     # S key
+    elif cv2.waitKey(1) == ord('s'):  # S key
         img_name = "opencv_frame_{}.png".format(img_counter)
         cv2.imwrite(img_name, accumulator_frame)
-        print("{} written!".format(img_name))
+        print("{} saved!".format(img_name))
         img_counter += 1
 
 cap.release()
