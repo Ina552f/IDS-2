@@ -1,4 +1,4 @@
-This is a program that let's you paint on a paint like screen with whatever black objects you have at home through your webcam.
+This is a program that let's you draw on a paint like screen with whatever black objects you have at home through your webcam.
 
 Before the program can work you need to download the following pip modules: Opencv-python and numpy.
 
