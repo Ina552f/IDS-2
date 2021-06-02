@@ -28,7 +28,7 @@ while True:
         # Clear out accumulator_frame
         if pt[0] < 140 and pt[1] < 30:
             accumulator_frame[:, :, :] = 0
-        # Takes and saves pictures from accumulator_frame
+        # Takes and saves pictures from accumulator_frame           PUT IN A DELAY?
         if pt[0] > 540 and pt[1] < 30:
             img_name = "opencv_frame_{}.png".format(img_counter)
             cv2.imwrite(img_name, accumulator_frame)
